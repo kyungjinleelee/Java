@@ -387,3 +387,172 @@ quiz 2) -5~5 사이의 난수를 20개 출력하시오.  ( -5,-4,-3,-2,-1,0,1,2,
 for(int i=1; i<=20; i++){
 	System.out.println( (int)(Math.random()*11) -5 );	// 범위는 -5<= x <6 
 }
+-------------------------------------------------
+* 반복문
+- 반복문은 크게 for문과 while문이 있음. (+ while문에서 파생된 do-while문)
+
+* for문 (반복문 )
+- 조건을 만족하는 동안 블럭 {}을 반복 -> ' 반복횟수 '를 알 때 적합 !! 
+
+for (초기화; 조건식; 증감식){
+	// 조건식이 참이면 문장 수행 -> 수행 후 증감식으로 이동
+}
+// 조건식이 거짓이면 for문 빠져나옴 
+
+quiz 1) 1부터 10을 거꾸로 출력하시오.
+for( int i = 10; i >= 1; i--){
+	System.out.println(i);
+}
+
+quiz 2) i는 1부터 10까지, j는 10부터 1까지 출력하시오.
+for( int i=1, j=10; i<=10; i++, j--){
+	System.out.println( "i=" +i+ ",j=" +j );	// for문 안에서 초기화된 i와 j는 for문 안에서만 사용할 수 있다.
+}
+
+==> 결과: i=1, j=10
+	 i=2, j=9 .....
+
+* 조건식을 생략하면, true로 간주되어서 무한반복문이 됨
+for(;;){
+	System.out.println(""); 
+}
+
+
+**** 중첩 for문 ****
+- for문 내에 또 다른 for문을 포함시킬 수 있다.
+
+<< 2단부터 9단까지 구구단코드 >>
+for(int i=2; i<=9; i++){
+   for(int j=1, j<=9, j++){
+	System.out.println( i+"*"+j+"="+(i*j));
+    }
+   System.out.println();   // 각 단 마다 단락 구분해줄 공백 넣어줌
+}
+
+<< 별찍기 !!!! 가로 10줄 세로 5줄짜리 별을 중첩 for문을 통해 찍어보자. >>
+for (int i=1; i<=5; i++){
+   for(int j=1; j<=10; j++){
+	System.out.print("*");
+   }
+   System.out.println();  // 줄바꿈 해주는 공백 넣어줌
+}   
+
+<< 별을 이렇게 찍어보자 >>
+*
+**
+***
+****
+*****
+for (int i=1; i<=5; i++){
+   for(int j=1; j<=i; j++){		// j<=10을 i<=i로 바꿔줌 (i가 증가할 때 같이 증가하도록)
+	System.out.print("*");
+   }
+   System.out.println();  // 줄바꿈 해주는 공백
+}   
+
+------------------------------------------------------------
+
+* while문 (반복문)
+- 조건을 만족시키는 동안 블럭{}을 반복 ->  ' 반복 횟수 '  모를 때 !!!
+
+while (조건식){
+	// 조건식의 연산결과가 참인 동안, 반복될 문장들
+}
+==> 즉, 조건식의 연산결과가 거짓이면 문장들은 한 번도 수행되지 않을 수 있다.
+
+for(int i=1; i<=10; i++){					int i = 1; // 초기화
+	System.out.println(i);   //              = 	    	while(i<=10){ // 조건식
+} 							System.out.println(i);
+							i++;	// 증감식 
+							}
+
+==> for문과 while문은 100% 서로 호환이 가능하다.
+ 
+quiz 1) 숫자를 입력받아 각 자리수의 합을 계산하는 반복문을 적으시오.
+   int num = 0, sum = 0;
+   System.out.println("숫자를 입력하세요. 예:12345)>");
+
+   Scanner sc = new Scanner(System.in);
+   String tmp = sc.nextLine();
+   num = Integer.parseInt(tmp); // 입력받은 문자열(tmp)를 정수로 변환
+
+   while(num>0){		 // 조건식
+	sum += num%10;
+	num = num/10;	 // 증감식 
+   }
+   System.out.println("각 자리수의 합:" +sum);
+
+* do-while문
+  - 블럭 {} 을 최소한 한 번은 반복하게 되어 있음! -> 사용자 입력받을 때 유용
+
+   do{
+       // 조건식의 연산결과가 참일 때 수행될 문장들 (처음 한 번은 무조건 실행)
+   }while (조건식);    // 끝에 ';'를 잊지 않도록 주의 
+
+quiz 2) 1~100 사이의 임의의 수를 저장하고, 사용자가 값을 입력하여 저장값을 맞춰보는 프로그램을 작성하시오 
+
+int input = 0, answer = 0;
+answer = (int)(Math.random()*100) + 1;
+Scanner sc = new Scanner(System.in);
+
+do{
+    System.out.print("1과 100사이의 정수를 입력하세요.");
+    input = sc.nextInt();
+    
+    if(input > answer){
+       System.out.println("더 작은수로 다시 시도해보세요.");
+    }else if(input < answer){
+	System.out.println("더 큰 수로 다시 시도해보세요.");
+    }
+}while(input!=answer); 		// 즉 input과 answer값이 다르다는 블럭값이 참이므로  do{} 안의 문장들을 수행한다.
+    System.out.println("정답입니다.");
+
+--------------------------------------------------------------
+
+* break문
+- 자신이 포함된 하나의 반복문을 벗어난다.
+
+(실습) 1. 무한 반복문 만든 후 break 문 사용하여 빠져나오도록 만들어보기 
+int sum = 0, i = 0;
+
+while(true){
+	if(sum>100)
+	break;		// 자신이 속한 하나의 반복문을 벗어난다.
+
+    ++i;
+  sum += i;
+}
+System.out.println("i=" + i);
+System.out.println("sum=" + sum);
+
+* continue문 
+- 자신이 포함된 반복문의 끝으로 이동 -> 다음 반복으로 건너뜀.
+- 전체 반복 중에서 특정 조건 시 반복을 건너뛸 때 유용
+
+for(int i=0; i<=10; i++){
+	if(i%3==0)
+	   continue;	// 조건식이 참이 되어 continue문이 수행되면 블럭의 끝으로 이동함. break문과 달리 반복문을 벗어나지 않는다.
+	System.out.print(i);
+}
+
+>> 결과: 12457810 (반복문을 수행은 하되, i%3==0이 참일 시 System.out.println(i); 이 문장을 건너뛰어서 3의배수 출력이 안됐음)
+
+* 이름붙은 반복문 
+- 반복문에 이름을 붙여서 하나 이상의 반복문을 벗어날 수 있다.
+ex) 
+Loop1: for(int i=2; i<=9; i++){		// for문에 Loop1이라는 이름을 붙임.
+	for(int j=1; j<=9; j++){
+	  if(j==5)
+		break Loop1;		// if문 뿐만 아니라 Loop1문도 빠져나감
+//		break;			// if문만 빠져나가게 됨 
+	 System.out.println(i+ "*" +j + "=" + i*j);
+	} //end of for i
+	System.out.println();
+      } // end of Loop1;
+
+>>> 결과: 2*1=2
+	 2*2=4
+	 2*3=6
+	 2*4=8
+
+
