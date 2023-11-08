@@ -225,3 +225,68 @@ System.out.println(score[0][0]);	//  값 출력
 		 {40,50,60}, 
 		 {40,50,60} 
 		};
+
+* 2차원 배열 예제 
+quiz 1) 2차원 배열의 모든 값들을 더하는 반복문을 작성하시오. 
+ 풀이 - 2차원 배열의 모든 값을 출력하려면 2중 반복문을 써야한다. ***템플릿 외우기 
+
+int[][] score = {// score[i].length →
+		 {100,100,100}, 
+score.length↓	 {40,50,60},
+		 {40,50,60},
+		 {20,20,20}
+		};
+int sum = 0; 		// sum을 0값으로 초기화
+
+for(int i = 0; i <score.length; i++){						// score.length;의 값은 4임 (배열의 세로줄 값)
+	for(int j = 0; j<score[i].length; j++){					// score[3].length;의 값은 3임 (가로줄 값)
+		System.out.printf("score[%d][%d]=%d%n", i, j, score[i][j]);
+		sum += score[i][j];
+	}
+    }
+System.out.println("sum=" + sum);
+
+==> 실행 결과 : 
+score[0][0]=100
+score[0][1]=100
+socre[0][2]=100
+score[1][0]=40
+score[1][1]=50 
+... 생략
+sum=570			// 0먼저 다 찍고, 1찍고, 2찍고, 3찍고 ..
+
+quiz 3) 퀴즈 프로그램 작성
+
+String[][] words = {
+	{"chair", "의자"},	// words[0][0],words[0][1]
+	{"computer", "컴퓨터"},	// words[1][0],words[1][1]
+	{"integer", "정수"}	// words[2][0],words[2][1]
+};
+
+Scanner sc = new Scanner(System.in);	
+
+for(int i=0; i<words.length; i++){
+	System.out.printf("Q%d. %s의 뜻은?", i+1, words[i][0]);
+
+String tmp = sc.nextLine();		// 사용자가 입력한 단어를 받음 ex. 의자, 컴퓨터, 자동차 등등
+if(tmp.equals(words[i][1])){		// 사용자가 입력한 값이 words[i][1]과 같은지 비교 
+	System.out.printf("정답입니다.%n%n");
+}else{
+	System.out.printf("틀렸습니다. 정답은%s입니다.%n%n", words[i][1]입니다.);
+}
+}//for문 끝
+
+---------------------------------------------------------
+* String 클래스 
+1. String클래스는 char[] (문자 배열)와 메서드(기능)을 결합한 것
+	
+	" String클래스 = char[] + 메서드(기능) "
+ q. 왜붙여놈?
+ a. 서로 관련이 있어서! --> 그래서 문자 배열(char[])을 그냥 쓰는 것보단 string 클래스를 쓰는게 훨씬 편함.
+
+2. String 클래스는 내용을 변경할 수 없음 (read only)
+ex) 
+String a = "a";
+String b = "b";
+a = a + b;	// 하면 a 값은 ab가 될 것 같지만, 아니다. a가 ab로 바뀌는 것이 아니라 새로운 게 만들어지는거다. 
+print(a) = "ab" 가 출력되긴 함 (자세한 건 9장에서 ...)
