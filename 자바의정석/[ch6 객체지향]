@@ -596,6 +596,76 @@ Time t = new Time(12, 34, 56);	// 이게 바로 생성자 !  훨씬 직관적이
 Point() {}	// Point 클래스의 기본 생성자 
 
 * 클래스 만들 때 '기본 생성자' 넣어주는 게 습관이 되야 함.. 나중에 에러 찾기가 어렵다
-
-
 -----------------------------------------------------------------
+* 매개 변수가 있는 생성자 
+class Car{
+  String color;		// 색상
+  String gearType;	// 변속기 종류
+  int door;		// 문의 개수
+
+  Car() {} 		// 기본 생성자
+  Car(String c, String g, int d){  // 매개변수가 있는 생성자
+     color = c;
+     gearType = g;
+     door = d;
+  }
+}
+
+생성자를 만들어 두면
+Car c = new Car();
+c.color = "white";
+c.gearType = "auto";	ㅡㅡㅡ> 대신	Car c = new Car("white", "auto", 4);
+c.door = 4;
+
+* 문장 실행 과정
+Car c = new Car("white", "auto", 4);
+---- - --- ------------------------
+①     ④     ②	       ③
+
+① 참조변수 c가 만들어짐 
+② 연산자 new가 객체를 만듦 (color, geatType, door)
+③ 생성자 호출 > 객체 초기화 
+④ = (대입 연산자)로 대입
+
+-------------------------------------------------------------------
+* 생성자 this 
+- 생성자에서 다른 생성자 호출할 때 사용
+- 같은 클래스 안의 생성자들끼리 호출할 때, 클래스 이름 대신에 this 씀 
+
+class Car2{
+  String color;		// 색상
+  String gearType;	// 변속기 종류
+  int door;		// 문의 개수
+ 
+  Car2(){  // Car2의 디폴트값 (매개변수 안 주면)
+	this("white", "auto", 4);	// Car2(String color, String gearType, int door)를 호출 
+  }
+
+  Car2(String color){
+	this(color, "auto", 4);		// Car2(String color, String gearType, int door)를 호출
+  }
+
+  Car2(String color, String gearType, int door){
+	this.color = color;
+ 	this.gearType = gearType;
+	this.door = door;
+   }
+
+- 다른 생성자 호출 시 첫 줄에서만 사용 가능 
+ex)
+Car(String color){
+   door = 5;
+   Car(color, "auto", 4);	// error. Car 대신 this라고 써야하고, 첫 줄에서만 사용 가능함.
+}
+
+* this를 통한 코드의 중복 제거		          * 코드의 중복을 제거한 코드
+class Car{
+  String color;				           Car(){
+  String gearType;	             ㅡㅡㅡㅡ> 	        // Card("white", "auto", 4);
+  int door;				                this("white", "auto", 4);
+					           }
+Car(String c, String g, int d) {
+   color  = c;
+  gearType = g;
+  door = d;
+}
