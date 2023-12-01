@@ -669,3 +669,94 @@ Car(String c, String g, int d) {
   gearType = g;
   door = d;
 }
+-----------------------------------------------------------------
+* 참조변수 this					
+- 인스턴스 자신을 가리키는 참조변수
+- 인스턴스 메서드(생성자 포함)에서만 사용가능
+- 지역변수(lv)와 인스턴스 변수(iv)를 구별할 때 사용
+
+Car(String c, String g, int d) {		  Car(String color, String gearType, int door) {
+   color  = c;	// iv				// this.color는 iv, color는 lv
+  gearType = g; // iv		ㅡㅡㅡㅡ> 	this.color = color;
+  door = d;	// iv				this.gearType = gearType;
+}						this.door = door;		// this 없으면 lv로 간주
+					   }
+
+--------------------------------------------------------------------
+* 참조변수 this, 생성자 this() 정리 
+▶ this : 인스턴스 자신을 가리키는 참조변수, 인스턴스의 주소가 저장되어 있음
+	   모든 인스턴스 메서드에 지역변수로 숨겨진 채로 존재 ( = 즉, 선언 하지 않아도 사용 가능, 생략 가능)
+
+▶ this(), this(매개변수) : 생성자, 같은 클래스 내에서 다른 생성자를 호출할 때 사용
+
+ex)
+class MyMath2 {
+	long a, b;		// this.a, this.b (iv의 진짜이름)
+
+	// 생성자
+	MyMath2(int a, int b) {   	
+	    this.a = a;		// this.a는 iv, a는 lv
+	    this.b = b;		// 여기서는 this 생략 불가. 생략 시 우측의 lv와 구분 불가하게 됨
+	}
+	// 인스턴스 메서드
+	long add() {			 
+	     return a + b;	// return this.a + this.b; (원래는 iv니까 this 붙어야하지만, 생략 가능해서 생략)
+	}
+	// 클래스 메서드(static 메서드)
+	static long add(long a, long b) {  // long a, long b는 lv
+	     return a + b;	// static 메서드는 객체 생성 없이 호출함 > iv 사용 불가 > this도 사용 불가 
+	}
+
+------------------------------------------------------------------------
+* 변수의 초기화
+- 지역변수(lv)는 사용 전 꼭!!!! 수동 초기화 해야함 **
+- 멤버변수(iv, cv)는 자동 초기화 된다.
+- ① 자동 초기화, ② 간단 초기화, ③ 복잡 초기화 
+
+class InitTest{
+    int x;	// 인스턴스 변수 (자동 초기화)
+    int y = x;  // 인스턴스 변수 
+
+      void method1(){
+	int i;		// 지역변수 (수동 초기화)
+	int j = i;	// error. 지역변수를 초기화하지 않고 사용
+      }
+}
+
+* 멤버변수의 초기화
+
+1. 명시적 초기화 (=)
+- 선언 시, 대입 연산자(=) 이용해서 초기화 하는 방법, 간단 초기화
+class Car{
+     int door = 4;			// 기본형(primitive type) 변수의 초기화
+     Engine e = new Engine();	// 참조형(reference type) 변수의 초기화   (null값으로 초기화가 아닌, 객체를 만들어 넣어주는 것)
+}
+
+2. 초기화 블럭 : 복잡한 초기화라서 여러 문장을 넣어야 할 때  (거의 안씀)
+- 인스턴스 초기화 블럭: {}
+- 클래스 초기화 블럭: static {}
+
+3. 생성자 (iv 초기화)
+Car2(String color, String gearType, int door){   // 매개변수 있는 생성자
+	this.color = color;
+ 	this.gearType = gearType;
+	this.door = door;
+   }
+
+==> =로 끝날 것이 아닌 복잡한 초기화가 필요하다면 > iv일 때는 생성자 초기화 > cv일 때는 static 초기화 
+
+
+* 멤버변수의 초기화 - static {}
+class StaticBlockTest{
+	static int[] arr = new int[10];   // 명시적 초기화 (간단 초기화)
+
+	static {  // static 초기화 블럭 - 배열 arr을 난수로 채운다.
+	      for(int i=0; i<arr.length; i++){
+		arr[i] = (int)(Math.random()*10)+1;
+	    }
+	}  // cv 복잡 초기화
+
+}
+
+▶ 클래스 변수 초기화 시점 : 클래스가 처음 로딩될 때(= 메모리에 올라갈 때) 단 한번
+▶ 인스턴스 변수 초기화 시점 : 인스턴스가 생성될 때 마다 
