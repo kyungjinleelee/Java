@@ -1,0 +1,84 @@
+[ch7 상속, 포함, 오버라이딩]
+
+* 상속  (Inheritance)
+▶ 기존의 클래스로 새로운 클래스를 작성하는 것 (코드의 재사용)
+▶ 두 클래스를 부모와 자식으로 관계를 맺어주는 것 
+
+  class 자식클래스 extends 부모클래스{
+	// ...
+  }
+
+  ex)
+  class Parent{}
+  class Child extends Parent{	// Child 클래스와 Parent 클래스를 상속 관계에 있다고 한다.
+	// ...
+  }
+
+▶ 자손은 조상의 모든 멤버를 상속받는다. (생성자, 초기화블럭 제외)
+▶ 즉 자손의 멤버 개수는 조상보다 적을 수 없다. (같거나 많다.) 
+
+  ex)
+  class Parent{
+	int age;
+  }
+  class Child extends Parent {}	 // Child클래스의 멤버가 0개처럼 보이지만 실은 1개다. (Parent클래스의 멤버가 1개이기 때문에)
+
+▶ 자손의 변경은 조상에 영향을 미치지 않는다.
+  ex)
+   class Parent{
+	int age;
+  }
+  class Child extends Parent {
+	void play() {		 // 새로운 멤버 추가했지만 조상인 Parent클래스에는 영향 주지 않는다. Child클래스 총 멤버는 2개
+		System.out.println("놀자~");
+	}
+  }
+
+------------------------------------------------------------------
+* 포함 관계
+▶ 포함(composite)이란?
+- 클래스의 멤버로 참조변수를 선언하는 것 
+ex)
+class Circle {
+   int x;  // 원점의 x좌표			class Circle {
+   int y;  // 원점의 y좌표	ㅡㅡㅡㅡ> 	     Point c = new Point();	// 원점 		 class Point {
+   int r;  // 반지름 				     int r;			// 반지름		int x;
+}						}  							int y;
+==> Circle이 Point를 '포함' 관계에 있음.								 }
+
+- 작은 단위의 클래스를 만들고, 이 둘을 조합해서 클래스를 만든다.
+ex) '자동차'라는 클래스를 만들 때 
+class Car {
+   Engine e = new Engine();	// 엔진
+     Door[] d = new Door[4];	// 문, 문의 개수를 넷으로 가정하고 배열로 처리
+   // ...
+}
+==> 멤버들을 다 쓰는 것 보다는, 작은 단위의 클래스를 만들고 이를 조합해서 클래스를 만들기
+==> 그럼 복잡도가 줄어들고 재사용성이 늘어난다.
+
+--------------------------------------------------------------------
+* 클래스 간의 관계 설정 
+- 상속관계 : '~은 ~이다.(is-a)'
+- 포함관계 : '~은 ~을 가지고 있다.(has-a)'
+
+Q. 상속관계로 할 지 포함관계로 할 지 긴가민가할 때 
+A. 문장을 만들어 보고 어떤 문장이 더 자연스러운지 본다 ! 
+  ex) 원(Circle)은 점(Point)이다.		- Circle is a Point.
+     원(Circle)은 점(Point)을 가지고 있다. - Circle has a Point. // 이 문장이 더 자연스러움 > 포함 관계로 관계설정 한다.
+
+     class Circle {
+	 Point p = new Point();		// 참조변수 선언과 초기화까지 필수로 해줘야 함
+	 int r;
+     } 	// ==> 사실 대부분의 경우(90%)가 포함 관계이다.
+     public class InheritanceTest {
+	public static void main(String[] args){
+		Circle c = new Circle();
+		c.p.x = 1;		// 접근 방법 주의 
+		c.p.y = 2;
+		c.r = 3;
+		System.out.println(c.p.x);	// 1
+		System.out.println(c.p.y);	// 2
+		System.out.println(c.p.z);	// 3
+	}
+     }
+---------------------------------------------------------------------
