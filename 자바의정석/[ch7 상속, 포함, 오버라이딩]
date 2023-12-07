@@ -199,3 +199,69 @@ class Child extends Parent {
 }
 
 ------------------------------------------------------------------------
+* 참조변수 super
+- 객체 자신을 가리키는 참조변수. 인스턴스 메서드(생성자)내에서만 존재 (=static메서드 내에서 사용 불가)
+- 조상의 멤버를 자신의 멤버와 구별할 때 사용
+
+(this : lv와 iv 구별에 사용, super: 조상 멤버와 자신 멤버 구별에 사용)
+
+Ex1)
+class superTest{
+   public static void main(String args[]){
+	Child c = new Child();
+	c.method();
+   }
+}
+class Parent { int x = 10;   /* super.x */ }
+
+class Child extends Parent {
+	int x = 20;	     // this.x
+	
+	void method() {
+	   System.out.println("x=" + x);	     // 가까운 x를 가리킴, 20
+  	   System.out.println("this.x=" + this.x);   // 20
+ 	   System.out.println("super.x=" + super.x);  // 10, 조상의 멤버 x를 가리킴
+	}
+}
+
+Ex2)
+class superTest2{
+   public static void main(String args[]){
+	Child2 c = new Child2();
+	c.method();
+   }
+}
+class Parent2 { int x = 10;   /* super.x와 this.x 둘 다 가능 */ }
+
+class Child2 extends Parent2 {
+	void method() {
+	   System.out.println("x=" + x);	      // 10, 자신 멤버에 x가 없으니 조상 멤버를 가리킴 
+  	   System.out.println("this.x=" + this.x);    // 10
+ 	   System.out.println("super.x=" + super.x);  // 10
+	}
+}
+
+
+* super() - 조상의 생성자 	(참조변수 super와 전혀 연관 없음)
+- 조상의 생성자를 호출할 때 사용
+- 조상의 멤버는 조상의 생성자를 호출해서 초기화
+
+Q. 조상의 생성자를 호출할 일이 있을까요?
+A. 있다. 자손 클래스의 생성자에서 조상 클래스의 생성자를 호출할 일이 있다.
+
+ex)
+class Point {						class Point3D extends Point {
+    int x, y;						    int z;
+
+    Point(int x, int y) {  // 생성자			    Point3D(int x, int y, int z) {
+	this.x = x;    // iv 초기화	  ㅡㅡㅡㅡㅡ>		this.x = x;   // 조상의 멤버를 초기화   (비추)
+	this.y = y;    // iv 초기화				this.y =  y;   // 조상의 멤버를 초기화   (비추)
+    }								this.z = z;
+}							    } 
+ 							}   // 에러는 아니지만 .. 이렇게 하면 안 됨
+							 ==> 자손의 생성자는 자기가 선언한 것만 초기화 해야 함. 
+- 이렇게 바꾸자! **
+Point3D(int x, int y, int z) {
+     super(x, y);	// 조상클래스의 생성자 Point(int x, int y)를 '호출'   (조상의 멤버를 초기화 하는 대신)
+     this.z = z;	// 자신의 멤버를 초기화 
+}
