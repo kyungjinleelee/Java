@@ -265,3 +265,77 @@ Point3D(int x, int y, int z) {
      super(x, y);	// 조상클래스의 생성자 Point(int x, int y)를 '호출'   (조상의 멤버를 초기화 하는 대신)
      this.z = z;	// 자신의 멤버를 초기화 
 }
+
+▶ 즉, 내가 직접 할 게 아니라, 조상의 생성자를 호출해서 조상 생성자가 조상 멤버를 초기화 하도록 만들라는 것.
+
+* 주의
+- 모든 생성자는 생성자의 첫 줄에 반드시 다른 생성자를 호출해야 함 ***		(super() 혹은 this())
+- 그렇지 않으면 컴파일러가 생성자의 첫 줄에 super();를 삽입
+- 기본 생성자 작성 필수 ***
+
+ex1)
+class Point {
+    int x;
+    int y;
+}
+
+    Point() { // 생성자1
+	this(0, 0);	// ok. 첫 줄에 생성자 호출함
+    }
+    
+       Point(int x, int y) {
+	this.x = x;     // 생성자가 아니기 때문에 컴파일러가 조상 기본 생성자 호출 코드인 super(); 삽입함
+	this.y = y;
+    }
+
+==> 코드가 이케 바뀐다
+       Point(int x, int y) {
+	super(); 	// Object();
+	this.x = x;    
+	this.y = y;
+    }
+
+ex2 에러 예제)
+class Point {
+    int x;
+    int y;						|	class PointTest {
+							|	    public static void main(String args[]){
+       Point(int x, int y) {				|		Point3D p3 = new Point3D(1, 2, 3);
+	this.x = x;   // ① 				|	    }
+	this.y = y;					|	}
+    }							|	// Point()가 없다는 컴파일러 에러 발생함. 
+    String getLocation() {
+	return "x :" + x + ", y " + y;
+    }
+} // end Point
+
+class Point3D extends Point {
+    int z;
+
+    Point3D(int x, int y, int z) {  // 에러 발생 위치
+	this.x = x;   // ②
+	this.y = y;
+	this.z = z;
+    }
+    String getLocation() {	// 오버라이딩
+	return "x :" + x + ", y " + y + ", z:" + z;
+    }
+}
+
+Q. 에러 발생 이유 
+A. 모든 생성자는 첫 줄에 다른 생성자를 호출해야 한다. 
+그러나 ①번 위치에서 생성자가 없어, 컴파일러가 super();를 자동 추가하게 된다. 의미는 조상클래스인 Object 클래스의 생성자를 호출하라는 의미. 
+또한 ②번 위치에서도 생성자가 없어 super();를 자동 추가하게 된다. 이 의미는 조상클래스인 Point클래스의 생성자(Point())를 호출하라는 의미.
+Point(){} 생성자를 호출하려고 보니 이 기본 생성자가 없다! ==> 그래서 error 
+
+Q. 에러 해결하려면 ?
+A. 두 가지 방법이 있음 
+  1. Point() {} 기본 생성자 추가해주기
+   2. 기본 생성자 호출 자체를 하지 않도록 코드를 바꿔주기 
+     Point3D(int x, int y, int z){
+	 super(x, y);	// 기본 생성자가 아니라 ①번 코드를 호출하도록
+	 this.z = z'
+     }
+
+-------------------------------------------------------------------------
+* 패키지 (package)
