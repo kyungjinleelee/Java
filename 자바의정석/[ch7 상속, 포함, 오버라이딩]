@@ -421,3 +421,106 @@ class ImportTest {						   class ImportTest {
 - static import문은 꼭 필요할 때만 쓰기 !
 
 ----------------------------------------------------------
+* 제어자   (modifier)
+- 클래스와 클래스의 멤버(멤버 변수, 메서드)에 부가적인 의미 부여  (영어로 따지면 '형용사'와 같은 개념)
+  ▶ 접근 제어자: public, protected, (default), private
+   ▶  그 외         : static, final, abstract, native, transient, synchronized, volatile, strictfp
+
+- 하나의 대상에 여러 제어자를 같이 사용가능 (접근 제어자는 하나만 쓸 수 있음)
+   public class ModifierTest {
+	public static final int WIDTH = 200; 	    // 제어자 public, static, final 함께 사용 
+
+	public static void main(String[] args) {    // 제어자 public, static 함께 사용 
+	     System.out.println("WIDTH=" + WIDTH);
+	}
+   }
+- 보통 관례적으로 접근 제어자를 제일 왼쪽에 씀 
+
+* 제어자 'static' - 클래스의, 공통적인
+* 제어자 'final'  - 마지막의, 변경될 수 없는
+   ▶ 대상
+  - 클래스 : 변경될 수 없는, 확장될 수 없는 클래스가 됨. ==> 그래서 final로 지정된 클래스는 다른 클래스의 조상이 될 수 없음 (변경X, 확장X)
+	  ex) 대표적인 final 클래스 : String, Math 
+	       String 클래스는 보안문제 때문에 상속이 불가능하도록 (조상에 접근불가하도록) final로 만듦
+   - 메서드 : 변경될 수 없는 메서드. final로 지정된 메서드는 오버라이딩을 통해 재정의 될 수 없음.
+   - 멤버변수, 지역변수 : 변수 앞에 final이 붙으면, 값을 변경할 수 없는 상수가 됨
+  ex) 
+   final class FinalTest {	   // 조상이 될 수 없는 클래스
+     final int MAX_SIZE = 10;      // 값을 변경할 수 없는 멤버변수 (상수)
+
+     final void getMaxSize() {     // 오버라이딩 불가 메서드 (변경 x)
+     	final int LV = MAX_SIZE;   // 값을 변경할 수 없는 지역변수 (상수)
+         	return MAX_SIZE; 
+     }
+  }
+
+* 제어자 'abstract' - 추상의, 미완성의 
+   ▶ 대상
+   - 클래스 : 클래스 내에 추상 메서드가 선언되어 있음을 의미 
+   - 메서드 :  선언부만 작성하고 구현부는 작성하지 않은 추상 메서드임을 알림 
+    ex)
+  abstract class AbstractTest {		// 추상 클래스 (추상 메서드를 포함한 클래스)
+	abstract void move();		// 추상 메서드 (구현부가 없는 메서드)
+  }
+  AbstractTest a = new AbstractTest();	// error. 추상 클래스의 인스턴스 생성불가 !!! 
+
+---------------------------------------------------------------
+* 접근 제어자  (access modifier)
+- private   : 같은 클래스 내에서만 접근이 가능
+- (default) : 같은 패키지 내에서만 접근이 가능
+- protected : 같은 패키지 내에서, 그리고 다른 패키지의 자손클래스에서 접근이 가능
+- public    : 접근 제한이 전혀 없음
+
+* 접근 범위 
+-    public   >   protected   >   (default)   >   private 
+  접근제한없음    같은 패키지+자손       같은 패키지         같은 클래스
+
+ex1)
+package pkg1;
+
+public class MyParent {
+     private   int prv;	 // 같은 클래스
+     	       int dft;	 // 같은 패키지
+     protected int prt;	 // 같은 패키지 + 자손(다른 패키지)
+     public    int pub;  // 접근제한 없음.
+
+     public void printMembers() {  	// 메서드 하나 만들어줌
+	System.out.println(prv);	// 같은 패키지, 클래스 내에 있기 때문에 모두 접근 가능
+	System.out.println(dft);
+	System.out.println(prt);
+	System.out.println(pub);
+     }
+}
+
+class MyParentTest {				// 주의 : 한 패키지 내에 public클래스는 한 개만 ! 
+     public static void main(String[] args){
+	   MyParent p = new MyParent();		// 접근하기위해 객체 생성
+	     System.out.println(p.prv);	// error. 접근 범위 맞지 않음 (private은 같은 클래스에서만 사용 가능, 다른 클래스임)
+	   System.out.println(p.dft);	// ok
+	   System.out.println(p.prt);	// ok
+	   System.out.println(p.pub); 	//  ok
+     }
+}
+/////////////////////////////////////////////////
+ex2)
+package pkg2;
+import pkg1.MyParent;	// import 안해주면 에러남
+
+class MyChild extends MyParent {
+     public void printMembers() {  	// ex1)과 동일한 메서드 
+	System.out.println(prv);	// error. 접근제어자가 private
+	System.out.println(dft);	// error. 접근제어자가 default (같은 패키지가 아니라서 에러)
+	System.out.println(prt);	// ok 	   다른 패키지이지만 자손클래스라서 ok
+	System.out.println(pub);	// ok
+     }
+}
+
+public class MyParentTest2{
+     public static void main(String[] args) {
+	   MyParent p = new MyParent();		// 접근하기위해 객체 생성
+	     System.out.println(p.prv);	// error. 
+	   System.out.println(p.dft);	// error.
+	   System.out.println(p.prt);	// error. 다른 패키지에 자손 클래스도 아니라서 error.
+	   System.out.println(p.pub); 	//  ok
+     }
+}
