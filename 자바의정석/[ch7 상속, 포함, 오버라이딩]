@@ -1,4 +1,4 @@
-[ch7 상속, 포함, 오버라이딩]
+[ch7 상속, 포함, 오버라이딩, import]
 
 * 상속  (Inheritance)
 ▶ 기존의 클래스로 새로운 클래스를 작성하는 것 (코드의 재사용)
@@ -339,3 +339,85 @@ A. 두 가지 방법이 있음
 
 -------------------------------------------------------------------------
 * 패키지 (package)
+- 서로 관련된 클래스의 묶음
+- 클래스는 클래스 파일(*.class), 패키지는 폴더. 하위 패키지는 하위 폴더
+- 클래스의 실제 이름(full name)은 패키지를 포함 (java.lang.String)
+
+* 패키지의 선언
+- 패키지는 소스파일의 첫 번째 문장으로 단 한번 선언
+  ex)
+  // PackageTest.java
+  package com.codechobo.book; 	// 패키지 선언
+  
+  public class PackageTest{	// 패키지 com.codechobo.book
+	public static void main(String[] args){
+	   System.out.println("Hello, world!");
+        }
+  }
+  class PackageTest2 {}		// 패키지 com.codechobo.book
+
+- 같은 소스 파일의 클래스들은 모두 같은 패키지에 속하게 됨
+- 패키지 선언이 없으면 이름없는(unnamed, default) 패키지에 속하게 됨
+
+* 클래스 패스 (classpath)
+- 클래스 파일(*.class)의 위치를 알려주는 경로 (path)
+- 환경변수 classpath로 관리하며, 경로간의 구분자는 ';'를 사용
+- classpath라는 환경변수를 만들고, 패키지의 루트를 등록해줘야 함.
+
+* 클래스 패스 등록 순서
+- 제어판 > 환경변수 검색 > 시스템 환경 변수 편집 클릭 > 하단의 '환경변수' 버튼 클릭 > 시스템 변수에서 '새로 만들기' 버튼 클릭 > 
+   변수 이름엔 classpath, 변수 값엔 해당 패키지의 bin 삽입 (ex. c:\java\workspace\ch07\bin) > 확인 클릭
+- 환경변수 값이 바뀌면 커맨드 창 새로 열어야 함 주의 (cmd)  
+
+* 커맨드 창 환경변수 명령어
+  set classpath 	   // classpath로 설정한 값 확인
+   set classpath=환경변수값   // classpath 설정값 설정 
+
+------------------------------------------------------------------
+* import문
+- 클래스를 사용할 때 패키지이름을 생략할 수 있다.			   import java.util.Date;   // Date클래스의 위치 알려주는 역할
+ex)			
+class ImportTest {						   class ImportTest { 	
+    java.util.Date today = new java.util.Date();   ㅡㅡㅡㅡㅡ>    	Date today = new Date();
+    // ...							    }
+}
+
+- java.lang패키지 (기본패키지 ex. String, Object, System, Thread, ... )의 클래스는 import하지 않고도 사용할 수 있다.
+
+* import문의 선언
+- import문 선언 방법 
+    import 패키지명.클래스명;
+	or
+    import 패키지명.*;		// *은 해당 패키지에 속한 모든 클래스를 의미함
+
+- import문은 패키지문과 클래스선언의 사이에 선언함
+- import문은 컴파일 시에 처리되므로 프로그램의 성능에 영향없음.
+   import java.util.Calendar;
+  import java.util.Date;			ㅡㅡㅡ>              import java.util.*;
+  import java.util.ArrayList;
+
+- 하지만 다음의 두 코드는 의미 다르다.
+    import java.util.*;
+    import java.text.*;			ㅡㅡㅡ>	        import java.*;
+
+- 이름이 같은 클래스가 속한 두 패키지를 import할 때는 클래스 앞에 패키지명을 붙여줘야 함 
+   import java.sql.*;		// java.sql.Date   ①
+  import java.util.*;		// java.util.Date  ②
+
+  public class ImportTest {
+	public static void main(String[] args) {
+		java.util.Date today = new java.util.Date();   // 클래스 앞에 패키지 이름 적어주면 ①, ②중 어디에 속했는지 알수있음
+	}
+  }
+
+* static import문
+- static 멤버를 사용할 때 클래스 이름을 생략할 수 있게 해줌
+  ex)
+  import static java.lang.Integer.*;	// Integer클래스의 모든 static 메서드
+ import static java.lang.Math.random;	// Math.random()만. 괄호 안붙임 
+ import static java.lang.System.out;	// System.out을 out만으로 참조 가능
+   	System.out.println(Math.random());   ㅡㅡㅡ>      out.println(random());
+
+- static import문은 꼭 필요할 때만 쓰기 !
+
+----------------------------------------------------------
