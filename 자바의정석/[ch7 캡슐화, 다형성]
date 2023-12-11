@@ -122,11 +122,11 @@ class Ex7_7 {
     }
 }
 
-class Car {					 |		class FireEngine extends Car {    // 소방차
-    String color;				 |			void water() {	   // 물을 뿌리는 기능
-    int door;					 |				System.out.println("water! ");
-						 |			}
-    void drive() {    // 운전하는 기능		 |		  }
+class Car {					  |		class FireEngine extends Car {    // 소방차
+    String color;				  |			void water() {	   // 물을 뿌리는 기능
+    int door;					  |				System.out.println("water! ");
+						  |			}
+    void drive() {    // 운전하는 기능		  |		  }
 	System.out.println("drive ~");				
     }
     void stop() {     // 멈추는 기능
