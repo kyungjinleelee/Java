@@ -1,1 +1,136 @@
-* 캡슐화
+[ch7-2 캡슐화, 다형성]
+
+* 캡슐화와 접근 제어자
+- 접근 제어자를 사용하는 이유 :
+  1. 외부로부터 데이터를 보호하기 위해서 
+   2.  외부에는 불필요한, 내부적으로만 사용되는 부분을 감추기 위해서 (굳이 외부에 노출시킬 필요 없잖아?)
+
+Ex1)
+public class Time {
+	public int hour;		  ㅡㅡㅡㅡㅡ>	    Time t = new Time();
+	public int minute;			    t.hour = 25;    // 멤버변수에 직접 접근 가능
+	public int second;
+}
+ Ex2)
+ public class Time {
+	private int hour;	// 접근 제어자를 private으로 하여 
+	private int minute;	// 외부에서 직접 접근하지 못하도록 한다. 
+	private int second;
+	
+	public int getHour() { return hour; }	    // 메서드는 public으로 해서, 외부에서 메서드를 통해 iv로 접근하도록 함
+	public void setHour(int hour) {		    // (메서드를 통한 간접 접근 허용)
+		if (hour < 0 || hour > 23) return;
+		this.hour = hour;
+	}
+}
+↓
+Time t = new Time();
+t.setHour(25); 		// hour값을 25로 설정했지만 상단의 setHour메서드 조건으로 인해 25로 바뀌지 않는다.  -> 데이터 보호 
+
+==> 이런 식으로 직접 접근을 막고, 메서드를 통한 간접 접근을 허용하는 것이 '캡슐화'
+
+
+Ex3)
+class Time {
+ 	private int hour; 	// 0~23사이의 값을 가져야함.
+    	private int minute;
+    	private int second;
+
+	public void setHour(int hour) {		    // hour값 설정 메서드 	    
+		if(hour < 0 || hour > 23) return;   // 0~23사이의 값이 아니면 return을 만나 메서드를 빠져나가도록 
+
+		this.hour = hour;		    // hour값 읽기 메서드
+	}
+
+	public int getHour() { return hour; };
+}
+
+public class TimeTest {
+	public static void main(String[] args) {
+		Time t = new Time();
+	//	t.hour = -100;	이렇게 접근 말고 
+		t.setHour(21);			
+		System.out.println(t.getHour());    // 21 (hour값 21로 바뀜) 
+		t.setHour(100);			
+		System.out.println(t.getHour());    // 21 (hour값 100으로 안바뀜, 유효범위가 아님)
+	}
+}
+
+---------------------------------------------------------------
+* 다형성  (polymorphism) ***** 중요
+- 여러 가지 형태를 가질 수 있는 능력
+- 조상 타입 참조 변수로 자손 타입 객체를 다루는 것 **
+
+class Tv {
+    boolean power;	// 전원상태 (on/off)			 원래대로라면 
+    int channel;	// 채널 					 Tv t = new Tv();
+								 SmartTv s = new SmartTv(); 처럼
+    void power()      { power =! power; }			
+    void channelUp()  { ++channel; }				 각 객체에 맞는 리모컨을 주고 다룸
+    void channelDown(){ --channel; }			ㅡㅡㅡㅡ>
+}
+class SmartTv extends Tv {
+    String text;	// 캡션(자막)을 보여주기위한 문자열
+    void caption() { /* 생략 */ }
+}
+↓
+Tv t = new SmartTv();	// ok. (타입이 불일치여도 ok인 것을 다형성이라고 한다) 
+
+- 객체와 참조변수의 타입이 일치할 때와 일치하지 않을 때의 차이 ?
+    SmartTv s = new SmartTv();		// 참조 변수와 인스턴스의 타입이 일치
+    Tv          t  = new SmartTv();		// 조상 타입 참조변수로 자손 타입 인스턴스를 참조 
+ ▶ 스마트티비 리모컨으로는 스마스티비 기능 7개를 다 다룰 수 있음. (=7개 멤버를 다 다룰 수 있음)
+      그러나 그냥 티비 리모컨(스마트티비의 조상)으로는 스마트티비 기능을 5개만 다룰 수 있음.
+
+- 자손 타입의 참조변수로 조상 타입의 객체를 가리킬 순 없음!
+    Tv          t  = new SmartTv();		// ok. 허용
+  SmartTv  s = new Tv();		// error. 허용 안 됨 (자손 타입이 갖고 있는 멤버가 조상타입의 멤버보다 많을 수 있기 떄문)
+
+* 다형성 정리
+Q. 참조변수의 타입은 인스턴스의 타입과 반드시 일치해야 하나요?
+A. 아님! 일치하는 것이 보통이지만 일치 하지 않을 수도 있음. (=다형성)
+
+Q. 참조변수가 조상타입일 때와 자손타입일 때의 차이?
+A. 참조변수로 사용할 수 있는 멤버의 갯수가 달라짐.
+
+Q. 자손타입의 참조변수로 조상타입의 객체를 가리킬 수 있나요?
+A. 아님! 허용되지 않음.
+
+--------------------------------------------------------------------
+* 참조변수의 형변환
+- 결론 :::  사용할 수 있는 멤버의 갯수를 조절하는 것 (리모컨 바꿔가면서) 
+- 조상 자손 관계의 참조변수는 서로 형변환 가능
+
+FireEngine f = new FireEngine();	// 가정) FireEngine클래스와 Ambulance클래스는 Car클래스를 상속받았다고 가정 
+
+Car c = (Car)f;				// ok. 조상인 Car타입으로 형변환 (생략 가능)
+FireEngine f2 = (FireEngine)c;		// ok. 자손인 FireEngine타입으로 형변환 (생략 불가)
+Ambulance a = (Ambulance)f;		// error. 상속관계가 아닌 클래스 간의 형변환 불가 (형제관계)
+
+Ex)
+class Ex7_7 {
+    public static void main(String args[]) {
+	Car car = null;
+	FireEngine fe = new FireEngine();
+	FireEngine fe2 = null;
+	
+	fe.water();
+	car = fe;		// car = (Car)fe; 에서 형변환이 생략됨
+//	car.water();		//  error. Car타입의 참조변수로는 water()를 호출할 수 없다.
+	fe2 = (FireEngine)Car;	// 자손타입 ← 조상타입. 형변환 생략 불가
+	fe.water();
+    }
+}
+
+class Car {					 |		class FireEngine extends Car {    // 소방차
+    String color;				 |			void water() {	   // 물을 뿌리는 기능
+    int door;					 |				System.out.println("water! ");
+						 |			}
+    void drive() {    // 운전하는 기능		 |		  }
+	System.out.println("drive ~");				
+    }
+    void stop() {     // 멈추는 기능
+	System.out.println("stop! ");
+    }
+}
+-------------------------------------------------------------------
