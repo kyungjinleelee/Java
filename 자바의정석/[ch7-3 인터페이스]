@@ -1,1 +1,77 @@
+[ch7-3 인터페이스]
 
+* 인터페이스 (interface)
+-  결론 : 추상 메서드의 집합 **
+- 핵심 : 구현된 것이 전혀 없는 설계도. 껍데기 (모든 멤버가 public)
+-  기능적 보완을 위해 JDK 1.8부터 상수, static 메서드, 디폴트 메서드가 추가됨 
+
+Q. 추상클래스와 인터페이스의 차이?
+A. 추상클래스는 일반 클래스인데 추상 메서드를 갖고있는 것(일부가 미완성인), 인터페이스는 구현된 게 아무것도 없는데 추상 메서드만 쭉 적어놓은 것.            
+   추상클래스는 iv(멤버변수)를 가질 수 있는데 인터페이스는 가질 수 없음. 
+
+- 인터페이스 선언 방법
+ interface 인터페이스이름 {
+	public static final 타입 상수이름 = 값;
+	public abstract 메서드이름(매개변수목록);		// 인터페이스의 모든 멤버는 public
+   }
+
+ex)
+interface PlayingCard {
+	public static final int SPADE = 4;	// 모두 상수.
+	final int DIAMOND = 3;			// public static final int DIAMOND = 3;
+	static int HEART = 2;			// public static final int HEART = 2;   (public static final 생략 가능)
+	int CLOVER = 1;				// public static final int CLOVER = 1;
+
+	public abstract String getCardNumber(); // 모두 추상 메서드
+	String getCardKind();			// public abstract String getCardKind();  (public abstract 생략 가능)
+}
+
+- 인터페이스의 조상은 인터페이스만 가능 (Object가 최고 조상 아님)
+- 다중 상속이 가능. (= 조상이 여러개) (추상메서드는 충돌해도 문제 없음, 메서드의 몸통이 없어 충돌날 일이 없기 때문)
+ ex)
+ interface Fightable extends Movable, Attackable { }  // 다중 상속이 가능 
+ 
+ interface Movable {
+	void move(int x, int y);	// 지정된 위치(x, y)로 이동하는 기능의 메서드
+ }
+ interface Attackable {
+	void attack(Unit u);		// 지정된 대상(u)를 공격하는 기능의 메서드
+ }	
+
+* 인터페이스의 구현 
+- 인터페이스에 정의된 추상 메서드를 완성하는 것
+- 구현 방법 : implements
+  class 클래스이름 implements 인터페이스이름 {
+	// 인터페이스에 정의된 추상메서드를 모두 구현해야 함
+  }
+
+Q. Fightable 인터페이스를 구현하시오.
+   interface Fightable {
+	void move(int x, int y);	
+	void attack(Unit u);
+ }
+A. 정의된 추상메서드들을 모두 구현해주어야 한다. (= 메서드의 몸통을 만들어주어야 한다)
+   class Fighter implements Fightable {
+	public void move(int x, int y) { /* 구현 내용 생략 */ }
+	public void attack(Unit u)     { /* 구현 내용 생략 */ }
+   }
+
+- 일부만 구현하는 경우, 클래스 앞에 abstract를 붙여야 함
+    abstract class Fighter implements Fightable {
+	public void move(int x, int y) { /* 구현 내용 생략 */ }
+   }
+
+* 인터페이스 개념 정리 
+Q. 인터페이스란?
+A. 추상 메서드의 집합
+
+Q. 인터페이스의 구현이란?
+A. 인터페이스의 추상메서드 몸통{} 만들기 (미완성 설계도 완성하기), 키워드는 implements
+
+Q. 추상클래스와 인터페이스의 공통점
+A. 둘 다 미완성, 추상 메서드를 가지고 있다.
+
+Q. 추상클래스와 인터페이스의 차이점
+A. 인터페이스는 iv를 가질 수 없다.
+
+-----------------------------------------------------------
