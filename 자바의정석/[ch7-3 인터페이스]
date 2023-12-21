@@ -75,3 +75,132 @@ Q. 추상클래스와 인터페이스의 차이점
 A. 인터페이스는 iv를 가질 수 없다.
 
 -----------------------------------------------------------
+* 인터페이스를 이용한 다형성 	// 참고 : 다형성 > 조상 참조변수로 자손 객체 가리키는 것.
+- 인터페이스도 구현 클래스의 부모로 치나요? yes
+- 인터페이스 타입 매개변수는 인터페이스 구현한 클래스의 객체만 가능하다.
+
+ex)
+class Fighter extends Unit implements Fightable {
+	public void move(int x, int y) { /* 내용생략 */ }
+	public void attack(Fightable f) { /* 내용생략 */ }
+}
+
+Unit      u = new Fighter();
+Fightable f = new Fighter();		// 엄밀히 말하면 조상은 아니지만 인터페이스도 부모클래스로 쳐서 다형성 접근 가능
+
+f.move(100, 200);
+f.attack(new Fighter());
+
+//////////////////////////////
+interface Fightable {
+      void move(int x, int y);
+      void attack(Fightable f); 	// attack메서드의 매개변수 타입은 Fightable인터페이스를 구현한 클래스의 인스턴스만 가능 **
+}
+
+- 인터페이스를 메서드의 리턴타입으로 지정할 수 있다. (반환타입만 문법적으로 맞춰주면 된다는 것이 중요)
+ ▶ Ex1) 
+ Fightable method() {			// Fightable 인터페이스를 구현한 클래스의 인스턴스를 반환한다는 뜻
+	...
+	Fighter f = new Fighter();	// Fighter 객체를 생성해서 하단의 리턴문 f로 반환 		
+	return f;			// 이 두 문장을 한 문장으로 바꾸면 return new Fighter(); 와 같음 
+ }
+
+▶ Ex2)
+ abstract class Unit {
+	int x, y;
+	abstract void move(int x, int y);
+	void stop() { System.out.println("멈춥니다."); }
+ }
+ interface Fightable {
+	void move(int x, int y);			    // public abstract가 생략됨
+	void attack(Fightable f);		    // public abstract가 생략됨 
+  }
+ class Fighter extends Unit implements Fightable {  // Fighter클래스가 Fightable을 구현 
+	public void move(int x, int y) { 	    // 앞에 public 없으면 에러남 (오버라이딩 규칙: 조상보다 접근제어자가 좁으면 안됨)
+       		System.out.println("["+x+"," +y+"]로 이동");
+        }
+	public void attack(Fightable f) { 
+             	System.out.println( f + "를 공격");
+        } 
+
+	// 싸울 수 있는 상대를 불러오는 메서드
+	Fightable getFightable() {
+		Fighter f = new Fighter();		// Fighter 객체를 생성해서 하단의 리턴문 f로 반환 	
+		return f;				 
+	}
+ }
+
+ public class FighterTest {
+	public static void main(String[] args) {
+  		Fighter   f = new Fighter();		// 당연히 ok
+	//	Unit      f = new Fighter();		// 다형성 ok, Unit에는 attack이 없어서 attack은 호출 불가.
+	//	Fightable f = new Fighter();		// 다형성 ok, 하지만 f.stop();하면 에러남 (Fightable에는 stop이 없음)
+		Fightable f = f.getFightable();		// getFightable 메서드 호출, 반환타입 맞추기 위해 Fightable 적어줌
+
+		f.move(100, 200);			// [100, 200]로 이동
+		f.attack(new Fighter());		// Fighter@15db9742를 공격 (toString이 호출된 것임)
+	//      Fighter f2 = new Fighter();
+	//      f.attack(f2);	해도 f.attack(new Fighter());랑 똑같음 
+	}
+ }
+
+-------------------------------------------------------------------
+* 인터페이스의 장점
+- 두 대상(객체) 간의 '연결, 대화, 소통'을 돕는 '중간 역할'을 한다.	ex) 윈도우의 GUI
+- 선언과 구현을 분리시킬 수 있게 한다. (선언 = 설계/껍데기, 구현 = 알맹이) (= 변경이 유리해진다.)
+  ex) 
+  class B {	// 껍데기 + 알맹이 
+	public void method() {
+		System.out.println("methodB");
+	}
+  }
+
+  ↓ 이걸 이렇게 변경할 수 있다 (변경에 유리해지고 유연한 코드가 된다)
+
+  interface I {		// 나는 껍데기 		ㅣ	class B implements I {		// 나는 알맹이 
+	public void method();			ㅣ		public void method() {
+ }						ㅣ			System.out.println("methodB");
+  						ㅣ		}
+						ㅣ	}
+
+- 결국 인터페이스 덕분에 B가 변경되어도 A는 안 바꿀 수 있게 된다. (느슨한 결합)
+▶ 직접적인 관계의 두 클래스 (A-B)
+   class A {
+	public void methodA(B b) {
+		b.methodB();		// A 클래스가 B 클래스의 메서드를 호출 (직접 호출)
+	}
+  }
+  class B {
+	public void methodB() {
+		System.out.println("methodB()");
+	}
+  }
+
+  class InterfaceTest {
+	public static void main(String args[]) {
+		A a = new A();		// A 클래스의 객체 만듦 
+		a.methodA(new B());	// 메서드에 B를 넣어줌 (=A가 B를 사용, =A가 B에 의존)
+	}
+  }
+
+ ▶ 간접적인 관계의 두 클래스 (A-I-B)
+   class A {
+	public void methodA(I i) {	// B를 사용하는 게 아니라 I를 사용하는 것으로 바뀜 (더이상 B와 관계없어지고 I와만 관계)
+		i.methodB();		// 인터페이스 I를 구현한 넘들만 들어와라!!!
+	}
+   }
+
+   // B클래스의 선언과 구현을 분리 
+   interface I { void methodB(); }			// 껍데기 (B의 method()를 추상 메서드로 갖는 인터페이스 작성)
+
+   class B implements I {				// 알맹이 (methodB()의 구현)
+	public void methodB() {
+		System.out.println("methodB()");
+	}
+   }
+   ↓
+   class C implements I {				// 나중에 B 대신 알맹이를 C로 바꿔도 A는 변경하지 않아도 된다.
+	public void methodB() {
+		System.out.println("methodB() in C");
+	}
+   }
