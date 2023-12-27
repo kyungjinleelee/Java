@@ -413,3 +413,40 @@ class Outer3 {
  }	
 
 ------------------------------------------------------------------
+* 익명 클래스 (anonymous class)
+- 이름이 없는 일회용 클래스. 한번 쓰고 말 거니까 정의와 생성을 동시에 !
+- 선언 문법 : 
+  - 이름이 없어서 자기 이름을 못 쓰니까 조상/구현인터페이스 이름을 써준다
+
+    new 조상클래스이름() {					new 구현인터페이스이름() {
+  	// 멤버 선언			OR			// 멤버 선언
+  }							}
+    
+  Ex 1)
+  class anonymousTest {
+	Object iv = new Object() { void method(){} };		// 익명 클래스
+	static Object cv = new Object() { void method(){} };	// 익명 클래스
+
+	void myMethod() {
+		Object lv = new Object() { void method(){} };	// 익명 클래스
+	}
+ }
+ ==> 참고: 익명클래스라서 컴파일하고 나면 숫자가 뜸
+	anonymousTest.class
+	anonymousTest$1.class (익명클래스)
+	anonymousTest$2.class (익명클래스)
+	anonymousTest$3.class (익명클래스) 
+
+  Ex 2) awt (자바 윈도우 프로그래밍) 코드 예시
+ import java.awt.*;
+
+  class Ex7_18 {
+	public static void main(String[] args) {
+		Button b = new Button("Start");
+		b.addActionListener(new ActionListener() {     // 클래스의 정의와 객체 생성을 동시에
+		    public void actionPerformed(ActionEvent e) {
+			 System.out.println("ActionEvent occurred!!!");
+		    } 
+		});
+	}
+   }
