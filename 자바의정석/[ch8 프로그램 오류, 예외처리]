@@ -18,8 +18,8 @@
 * 예외 클래스의 계층 구조
 			        Exception(미약한 오류) ㅡ  RuntimeException
 				   ㅣ		      |
-(최고조상)   (클래스. 모든 오류의 조상)ㅣ		      ㅡ IOException
-  Object   ㅡ   Throwable  ㅡㅡㅡㅡㅡㅡ		      |
+(최고조상)  (클래스.모든오류의 조상)ㅣ		      ㅡ IOException
+  Object   ㅡ Throwable  ㅡ ㅡㅡㅡㅡ		      |
 				   |		      ㅡ ClassNotFoundException
 				   |		      |
 				   |		      ㅡ ...
