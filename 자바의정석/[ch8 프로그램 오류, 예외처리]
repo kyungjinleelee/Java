@@ -102,3 +102,97 @@ class Ex8_2 {
 		System.out.print(4);
 	} // main메서드의 끝
 } // 결과: 134
+
+* 예외의 발생과  catch블럭
+- 예외가 발생하면, 이를 처리할 catch블럭을 찾아 내려감
+- 일치하는 catch블럭이 없으면, 예외는 처리 안됨
+- Exception이 선언된 catch블럭은 모든 예외 처리 (마지막 catch블럭)
+ex) 
+class Ex8_4 {
+	public static void main(String args[]) {
+		System.out.println(1);
+		System.out.println(2);
+		try{
+			System.out.println(3);
+			System.out.println(0/0);	// 0으로 나눠서 고의로 ArithmeticException을 발생시킨다.
+			System.out.println(4);		// 실행 x 
+		} catch (ArithmeticException ae) {	  		// catch블럭 ①
+			if (ae instanceof ArithmeticException)
+			   System.out.println("true");
+			System.out.println("ArithmeticException");
+		} catch (Exception e) {					// ②, ArithmeticException 제외한 모든 예외가 처리됨
+			System.out.println("Exception");
+		} // try-catch의 끝
+		System.out.println(6);
+	} // main메서드의 끝
+} 
+==> 결과 :
+1
+2
+3
+true
+ArithmeticException
+6
+
+-------------------------------------------------------------------------
+* printStackTrace()와  getMessage()
+▶ printStackTrace() : 예외발생 당시의 호출 스택 (Call Stack)에 있었던 메서드의 정보와 예외 메서드를 화면에 출력
+▶ getMessage()      : 발생한 예외클래스의 인스턴스에 저장된 메시지를 얻을 수 있음
+
+ex) 
+class Ex8_5 {
+	public static void main(String args[]) {
+	   System.out.println(1);
+	   System.out.println(2);
+
+	   try{
+		System.out.println(3);
+		System.out.println(0/0);	// 예외발생 > 예외정보가 들어있는 예외 객체 생성됨 > 메서드로 그 정보를 가져올 수 있다.
+		System.out.println(4);		
+	   } catch (ArithmeticException ae) {	  		
+		ae.printStackTrace();		// 참조변수 ae를 통해, 생성된 ArithmeticException 인스턴스에 접근 
+		System.out.println("예외메시지 : " + ae.getMessage());
+	   } 
+	System.out.println(6);
+	}
+} 
+==> 결과 :
+1
+2
+3
+java.lang.ArithmeticException: / by zero at Ex8_5.main(Ex8_5.java:8)
+예외메시지 : / by zero
+6 
+
+* 멀티 catch블럭
+- 내용이 같은 catch블럭을 하나로 합친 것  (JDK1.7부터)
+try{
+	...						try {
+} catch (ExceptionA e) {						...
+	e.printStackTrace();				} catch (ExceptionA | ExceptionB e) {	// 내용 동일 중복제거
+} catch (ExceptionB e2) {		ㅡㅡㅡㅡㅡ>		e.printStackTrace();
+	e2.printStackTrace();				}
+} 
+
+
+- 주의: 예외가 부모자식간의 관계면 성립 X -> 왜냐하면 이렇게 쓸 이유가 없음.
+ex 1)
+try{
+	...
+// } catch (ParentException | ChildException e) {	  	// error !!!
+} catch (ParentException e) {				// ok. 위의 라인과 의미상 동일 
+	e.printStackTrace();		
+} 
+
+ex 2)
+try{
+	...						
+} catch (ExceptionA | ExceptionB e) {		
+	e.methodA();			// error. ExceptionA에 선언된 methodA()는 호출 불가.			
+	
+	if( e instanceof ExceptionA ){		// 정 ~ 객체별로 다르게 동작되고 싶게 하려면 이렇게
+		ExceptionA e1 = (ExceptionA)e;	// 형변환 필요  (이렇게 멀티 catch블럭 쓸 바에 따로 쓰는게 남)
+		e1.methodA();			// ok. ExceptionA에 선언된 메서드 호출 가능
+	} else {  // if(e instanceof ExceptionB)
+		...
+--------------------------------------------------------------
