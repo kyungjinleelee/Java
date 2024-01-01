@@ -89,3 +89,16 @@ class Ex8_1 {
 }
 // 결과: 1235
 
+ex 2) 예외가 발생했을 때
+class Ex8_2 {
+	public static void main(String args[]) {
+		System.out.print(1);
+		try{
+			System.out.print(0/0);	  // 예외 발생! (0으로 나누는 것 금지)
+			System.out.print(2);
+		} catch (ArithmeticException ae) {
+			System.out.print(3);
+		} // try-catch의 끝
+		System.out.print(4);
+	} // main메서드의 끝
+} // 결과: 134
