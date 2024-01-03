@@ -250,3 +250,59 @@ class Ex8_8 {
 Exception in thread "main" java.lang.RuntimeException at Ex8_8.main(Ex8_8.java:3)
 
 --------------------------------------------------------------------
+* 메서드에 예외 선언하기
+- 예외를 처리하는 방법 : ① try-catch문 (=직접 처리) , ② 예외 선언하기 (=예외 떠넘기기), ③ 은폐 (=덮기, 빈 try-catch문을 쓰는 것, 지양)
+- 메서드가 호출 시 발생가능한 예외를 호출하는 쪽에 알리는 것
+- 예외를 발생시키는 키워드 throw와 예외를 메서드에 선언할 때 쓰이는 throws를 잘 구별하자.
+
+void method() throws Exception1, Exception2, ... ExceptionN {	// 메서드에 예외 선언
+	// 메서드 내용
+}
+
+// method()에서 Exception과 그 자손 예외 발생 가능
+void method() throws Exception {				// 모든 예외의 최고 조상
+	// 메서드 내용
+}
+
+▶ ex1)
+static void startInstall() throws SpaceException, MemoryException { // 이 메서드 사용 시 두 가지 예외가 발생 가능인 걸 설명
+	if (!enougnSpace())		// 충분한 설치 공간이 없으면 ..
+	   throw new SpaceException("설치할 공간이 부족합니다.");
+	if (!enougnMemory())		// 충분한 설치 공간이 없으면 ..
+	   throw new MemoryException("메모리가 부족합니다.");
+} // startInstall메서드의 끝
+
+▶ ex2)
+import java.io.*;
+
+class Ex8_10 {
+    public static void main(String[] args) {
+	   try{							// 떠넘겨진 예외를 try-catch문으로 처리
+		File f = createFile(args[0]);			// main에서 createFile 일시킴 > 예외 발생 > 처리할 catch블럭 찾음
+		System.out.println( f.getName() + "파일이 성공적으로 생성되었습니다.");
+	    } catch (Exception e) {
+		System.out.println( e.getMessage() + "다시 입력해 주시기 바랍니다.");
+	    }
+    } // end main
+
+    static File createFile(String fileName) throws Exception {	// 예외 발생 시 호출한 곳(main)으로 예외 떠넘김
+	if (fileName == null || fileName.equals(""))
+		throw new Exception("파일이름이 유효하지 않습니다.");
+	File f = new File(fileName);	// File클래스의 객체 생성
+	
+	f.createNewFile();		// File객체의 createNewFile메서드를 이용해서 실제 파일 생성
+	return f;			// 생성된 객체의 참조를 main으로 반환
+    } // end createFile
+} // end class
+
+==> 결과
+C:\jdk1.8\work\ch8>java Ex8_10 test2.txt
+test2.txt파일이 성공적으로 생성되었습니다.
+
+C:\jdk1.8\work\ch8>java Ex8_10 ""
+파일이름이 유효하지 않습니다. 다시 입력해 주시기 바랍니다.
+
+==> 참고: args[0] 값을 지정해주려면 상단 실행단추에서 Run Configurations > Arguments > Program arguments에 원하는 값 작성 > Run
+    이게 귀찮으면 File f = createFile("test2.txt"); 라고 직접 명시해줘도 됨 
+       프로젝트 우클릭 > Refresh 하면 만들어진 test2.txt 파일이 보일 것
+
